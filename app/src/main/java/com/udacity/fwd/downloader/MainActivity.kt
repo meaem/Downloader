@@ -34,9 +34,10 @@ class MainActivity : AppCompatActivity() {
 //        setContentView(R.layout.activity_main)
         setSupportActionBar(binding.toolbar)
 
+
         registerReceiver(receiver, IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE))
 
-        binding.custom_button.setOnClickListener {
+        binding.customButton.setOnClickListener {
             download()
         }
     }
