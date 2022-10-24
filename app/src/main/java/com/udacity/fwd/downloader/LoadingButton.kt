@@ -62,15 +62,18 @@ class LoadingButton @JvmOverloads constructor(
         when (new) {
             is ButtonState.Clicked -> {
                 currentText = text
+
                 animateButton()
             }
             is ButtonState.Loading -> {
                 currentText = animationText
+                drawCircleRect = true
                 isEnabled = false
             }
             //completed
             else -> {
                 currentText = text
+                drawCircleRect = false
                 isEnabled = true
             }
         }
@@ -78,6 +81,8 @@ class LoadingButton @JvmOverloads constructor(
 
     private lateinit var animatorSet: AnimatorSet
 
+
+    private var drawCircleRect = false
     private fun animateButton() {
         val animator1 = ValueAnimator.ofArgb(Color.BLACK, fillColor).apply {
             addUpdateListener {
@@ -156,21 +161,22 @@ class LoadingButton @JvmOverloads constructor(
         canvas.clipRect(0f, 0f, widthSize.toFloat() / 2, heightSize.toFloat() / 2)
         canvas.drawText(currentText, 0f, FONT_SIZE, paint)
         canvas.restore()
-
-        //draw the gray rectangle and the circle at the end of the button rectangle
-        canvas.save()
-        paint.color = CIRCLE_COLOR
-        canvas.translate((widthSize - heightSize).toFloat(), 0f)
-        canvas.clipRect(0f, 0f, heightSize.toFloat(), heightSize.toFloat())
-        canvas.drawColor(CIRCLE_RECT_COLOR)
-        canvas.drawArc(
-            circleRect,
-            0f,
-            circleAngle,
-            true,
-            paint
-        )
-        canvas.restore()
+        if (drawCircleRect) {
+            //draw the gray rectangle and the circle at the end of the button rectangle
+            canvas.save()
+            paint.color = CIRCLE_COLOR
+            canvas.translate((widthSize - heightSize).toFloat(), 0f)
+            canvas.clipRect(0f, 0f, heightSize.toFloat(), heightSize.toFloat())
+            canvas.drawColor(CIRCLE_RECT_COLOR)
+            canvas.drawArc(
+                circleRect,
+                0f,
+                circleAngle,
+                true,
+                paint
+            )
+            canvas.restore()
+        }
     }
 
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
