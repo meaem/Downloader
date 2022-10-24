@@ -1,71 +1,165 @@
 package com.udacity.fwd.downloader
 
 import android.app.DownloadManager
+import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.net.Uri
+import android.graphics.Color
 import android.os.Bundle
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationCompat
 import androidx.databinding.DataBindingUtil
 import com.udacity.fwd.downloader.databinding.ActivityMainBinding
 
-//import kotlinx.android.synthetic.main.activity_main.*
-//import kotlinx.android.synthetic.main.content_main.*
-
 
 class MainActivity : AppCompatActivity() {
 
     private var downloadID: Long = 0
-
+    private val TAG = "MainActivity"
     private lateinit var notificationManager: NotificationManager
     private lateinit var pendingIntent: PendingIntent
     private lateinit var action: NotificationCompat.Action
+
+    companion object {
+        //        private const val URL =
+//            "https://github.com/udacity/nd940-c3-advanced-android-programming-project-starter/archive/master.zip"
+        private const val CHANNEL_ID = "channelId"
+        private const val NOTIFICATION_ID = 0
+    }
+
+    private val receiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            val id = intent?.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1)
+
+
+            sendNotification(id)
+        }
+
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val binding =
             DataBindingUtil.setContentView<ActivityMainBinding>(this, R.layout.activity_main)
 
+        createChannel(CHANNEL_ID, "Downloads", "Downloaded Files")
 //        setContentView(R.layout.activity_main)
-        setSupportActionBar(binding.toolbar)
+//        setSupportActionBar(binding.toolbar)
 
 
         registerReceiver(receiver, IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE))
 
         binding.customButton.setOnClickListener {
-            download()
+            if (binding.rdoGroup.checkedRadioButtonId == -1) {
+                Toast.makeText(this, "Please Select an option", Toast.LENGTH_SHORT)
+                    .show()
+            } else {
+                val downloadRequest = when (binding.rdoGroup.checkedRadioButtonId) {
+                    binding.rdoGlide.id -> {
+                        DownloadRequest(
+                            binding.rdoGlide.tag.toString(),
+                            getString(R.string.radio_glide_text),
+                            getString(R.string.radio_glide_desc)
+                        )
+                    }
+                    binding.rdoRetrofit.id -> {
+                        DownloadRequest(
+                            binding.rdoRetrofit.tag.toString(),
+                            getString(R.string.radio_retrofit_text),
+                            getString(R.string.radio_retrofit_desc)
+                        )
+                    }
+                    else -> {
+                        DownloadRequest(
+                            binding.rdoLoadApp.tag.toString(),
+                            getString(R.string.radio_loadadpp_text),
+                            getString(R.string.radio_loadadpp_desc)
+                        )
+                    }
+
+                }
+
+
+                download(downloadRequest)
+            }
+
         }
     }
 
-    private val receiver = object : BroadcastReceiver() {
-        override fun onReceive(context: Context?, intent: Intent?) {
-            val id = intent?.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1)
+    private fun createChannel(channelId: String, channelName: String, desc: String) {
+        val notiChannel =
+            NotificationChannel(channelId, channelName, NotificationManager.IMPORTANCE_HIGH)
+        notiChannel.apply {
+            enableLights(true)
+            lightColor = Color.RED
+            enableVibration(true)
+            description = desc
+            setShowBadge(true)
         }
+        val notiMgr = getSystemService(NotificationManager::class.java)
+        notiMgr.createNotificationChannel(notiChannel)
+
+
     }
 
-    private fun download() {
+    private fun download(dr: DownloadRequest) {
+//        Log.d(TAG, "$url")
         val request =
-            DownloadManager.Request(Uri.parse(URL))
-                .setTitle(getString(R.string.app_name))
-                .setDescription(getString(R.string.app_description))
+            DownloadManager.Request(dr.uri)
+                .setTitle(dr.title)
+                .setDescription(dr.description)
                 .setRequiresCharging(false)
                 .setAllowedOverMetered(true)
                 .setAllowedOverRoaming(true)
 
+
         val downloadManager = getSystemService(DOWNLOAD_SERVICE) as DownloadManager
         downloadID =
             downloadManager.enqueue(request)// enqueue puts the download request in the queue.
+
     }
 
-    companion object {
-        private const val URL =
-            "https://github.com/udacity/nd940-c3-advanced-android-programming-project-starter/archive/master.zip"
-        private const val CHANNEL_ID = "channelId"
+
+    fun sendNotification(id: Long?) {
+        notificationManager = getSystemService(NotificationManager::class.java)
+        val actionintent = Intent(applicationContext, DetailActivity::class.java)
+
+        id?.let {
+            actionintent.putExtra(DownloadManager.EXTRA_DOWNLOAD_ID, id)
+        }
+
+
+        pendingIntent = PendingIntent.getActivity(
+            applicationContext,
+            NOTIFICATION_ID,
+            actionintent,
+            PendingIntent.FLAG_UPDATE_CURRENT + PendingIntent.FLAG_IMMUTABLE
+        )
+
+        val notificationBuilder = NotificationCompat
+            .Builder(applicationContext, CHANNEL_ID)
+            .setContentTitle(getString(R.string.notification_title))
+            .setContentText(getString(R.string.notification_description))
+            .setSmallIcon(R.drawable.ic_assistant_black_24dp)
+            .setContentIntent(pendingIntent)
+            .setAutoCancel(true)
+            .addAction(0, getString(R.string.notification_button), pendingIntent)
+            .setPriority(NotificationCompat.PRIORITY_HIGH)
+
+        notificationManager.notify(NOTIFICATION_ID, notificationBuilder.build())
+
     }
+
+//    fun cancelNotification() {
+//        notificationManager =
+//            getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+//        notificationManager.cancelAll()
+//    }
+
 
 }

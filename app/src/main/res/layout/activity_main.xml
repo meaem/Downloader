@@ -7,46 +7,73 @@
 
     </data>
 
-    <androidx.coordinatorlayout.widget.CoordinatorLayout
+
+    <androidx.constraintlayout.motion.widget.MotionLayout
+        android:id="@+id/main_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".MainActivity">
+        app:layoutDescription="@xml/activity_main_scene"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        tools:context=".MainActivity"
+        tools:showIn="@layout/activity_main">
 
-        <com.google.android.material.appbar.AppBarLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:theme="@style/Theme.Downloader.AppBarOverlay">
+        <com.udacity.fwd.downloader.LoadingButton
+            android:id="@+id/custom_button"
+            android:layout_width="0dp"
+            android:layout_height="60dp"
 
-            <androidx.appcompat.widget.Toolbar
-                android:id="@+id/toolbar"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="16dp"
+            app:fillColor="@color/primaryColor"
+
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:text="@string/downloading"
+            app:textColor="@color/primaryTextColor" />
+
+        <RadioGroup
+            android:id="@+id/rdoGroup"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="16dp"
+            app:layout_constraintBottom_toTopOf="@+id/custom_button"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <RadioButton
+                android:id="@+id/rdoGlide"
                 android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                android:background="?attr/colorPrimary"
-                app:popupTheme="@style/Theme.Downloader.PopupOverlay" />
+                android:layout_height="wrap_content"
+                android:layout_marginTop="80dp"
+                android:tag="@string/radio_glide_url"
+                android:text="@string/radio_glide_text"
+                android:textAppearance="@style/TextAppearance.AppCompat.Large" />
 
-        </com.google.android.material.appbar.AppBarLayout>
+            <RadioButton
+                android:id="@+id/rdoLoadApp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="80dp"
+                android:tag="@string/radio_loadadpp_url"
+                android:text="@string/radio_loadadpp_text"
+                android:textAppearance="@style/TextAppearance.AppCompat.Large" />
 
-        <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:app="http://schemas.android.com/apk/res-auto"
-            xmlns:tools="http://schemas.android.com/tools"
-            android:id="@+id/main_layout"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior"
-            tools:context=".MainActivity"
-            tools:showIn="@layout/activity_main">
+            <RadioButton
+                android:id="@+id/rdoRetrofit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="80dp"
+                android:tag="@string/radio_retrofit_url"
+                android:text="@string/radio_retrofit_text"
+                android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+        </RadioGroup>
 
-            <com.udacity.fwd.downloader.LoadingButton
-                android:id="@+id/custom_button"
-                android:layout_width="0dp"
-                android:layout_height="60dp"
-                android:layout_margin="20dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.motion.widget.MotionLayout>
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>
