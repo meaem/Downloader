@@ -17,6 +17,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationCompat
 import androidx.databinding.DataBindingUtil
 import com.udacity.fwd.downloader.databinding.ActivityMainBinding
+import com.udacity.fwd.downloader.util.getDownloadManagerResult
 
 
 class MainActivity : AppCompatActivity() {
@@ -141,8 +142,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun download(dr: DownloadRequest?) {
-
-//        Log.d(TAG, "$url")
         dr?.let {
             val request =
                 DownloadManager.Request(dr.uri)
@@ -165,9 +164,13 @@ class MainActivity : AppCompatActivity() {
     fun sendNotification(id: Long?) {
         notificationManager = getSystemService(NotificationManager::class.java)
         val actionintent = Intent(applicationContext, DetailActivity::class.java)
+        var title = getString(R.string.notification_title)
 
         id?.let {
             actionintent.putExtra(DownloadManager.EXTRA_DOWNLOAD_ID, id)
+            val result = getDownloadManagerResult(id, MainActivity@ this)
+            title += "....." + result.status
+
         }
 
 
@@ -178,9 +181,10 @@ class MainActivity : AppCompatActivity() {
             PendingIntent.FLAG_UPDATE_CURRENT + PendingIntent.FLAG_IMMUTABLE
         )
 
+
         val notificationBuilder = NotificationCompat
             .Builder(applicationContext, CHANNEL_ID)
-            .setContentTitle(getString(R.string.notification_title))
+            .setContentTitle(title)
             .setContentText(getString(R.string.notification_description))
             .setSmallIcon(R.drawable.ic_assistant_black_24dp)
             .setContentIntent(pendingIntent)

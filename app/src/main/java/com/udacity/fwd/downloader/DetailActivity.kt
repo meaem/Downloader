@@ -1,17 +1,16 @@
 package com.udacity.fwd.downloader
 
-import android.annotation.SuppressLint
 import android.app.DownloadManager
 import android.content.Intent
-import android.database.Cursor
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import com.udacity.fwd.downloader.databinding.ActivityDetailBinding
+import com.udacity.fwd.downloader.util.getDownloadManagerResult
 
 class DetailActivity : AppCompatActivity() {
 
-    @SuppressLint("Range")
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val binding =
@@ -25,40 +24,20 @@ class DetailActivity : AppCompatActivity() {
             startActivity(newIntent)
         }
 
-        val downloadManager = getSystemService(DOWNLOAD_SERVICE) as DownloadManager
         val downloadId = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1)
+//        val downloadManager = getSystemService(DOWNLOAD_SERVICE) as DownloadManager
 
-        //query the DM with the download id
-        val query = DownloadManager.Query().setFilterById(downloadId)
-
-        // open the cursor and get the first result
-        val cursor: Cursor = downloadManager.query(query)
-        cursor.moveToFirst()
-        val status = cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_STATUS))
-        val title = cursor.getString(cursor.getColumnIndex(DownloadManager.COLUMN_TITLE))
-        val desc = cursor.getString(cursor.getColumnIndex(DownloadManager.COLUMN_DESCRIPTION))
-        cursor.close()
+        val result = getDownloadManagerResult(downloadId, this)
 
 
         binding.txtID.text = downloadId.toString()
-        binding.txtStatus.text = getStatusString(status)
-        binding.txtTitle.text = title.toString()
-        binding.txtDesc.text = desc.toString()
+        binding.txtStatus.text = result.status
+        binding.txtTitle.text = result.title
+        binding.txtDesc.text = result.desc
 
 
     }
 
 
-    private fun getStatusString(status: Int): String {
-
-        return when (status) {
-            DownloadManager.STATUS_FAILED -> getString(R.string.failed)
-            DownloadManager.STATUS_PAUSED -> getString(R.string.paused)
-            DownloadManager.STATUS_PENDING -> getString(R.string.pending)
-            DownloadManager.STATUS_RUNNING -> getString(R.string.downloading_in_progress)
-            DownloadManager.STATUS_SUCCESSFUL -> getString(R.string.success)
-            else -> getString(R.string.invalid_status_code)
-        }
-    }
 
 }
