@@ -37,7 +37,6 @@ class DetailActivity : AppCompatActivity() {
         val status = cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_STATUS))
         val title = cursor.getString(cursor.getColumnIndex(DownloadManager.COLUMN_TITLE))
         val desc = cursor.getString(cursor.getColumnIndex(DownloadManager.COLUMN_DESCRIPTION))
-//        val localURI = cursor.getString(cursor.getColumnIndex(DownloadManager.COLUMN_LOCAL_URI))
         cursor.close()
 
 
@@ -45,7 +44,6 @@ class DetailActivity : AppCompatActivity() {
         binding.txtStatus.text = getStatusString(status)
         binding.txtTitle.text = title.toString()
         binding.txtDesc.text = desc.toString()
-//        binding.txtLocalURI.text = localURI.toString()
 
 
     }
