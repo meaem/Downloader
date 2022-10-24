@@ -4,6 +4,7 @@
         <attr name="textColor" format="color" />
         <attr name="fillColor" format="color" />
         <attr name="text" format="string" />
+        <attr name="animationText" format="string" />
 
     </declare-styleable>
 </resources>

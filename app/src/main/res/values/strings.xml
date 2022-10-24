@@ -10,7 +10,7 @@
     <string name="button_name">Click me</string>
     <string name="button_loading">We are loading </string>
     <string name="title_activity_detail">Download Details</string>
-    <string name="downloading">Downloading</string>
+    <string name="download">Download</string>
     <string name="radio_glide_text">Glide</string>
     <string name="radio_loadadpp_text">LoadApp</string>
     <string name="radio_retrofit_text">Retrofit</string>

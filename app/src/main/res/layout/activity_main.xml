@@ -30,7 +30,8 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:text="@string/downloading"
+            app:animationText="@string/downloading_in_progress"
+            app:text="@string/download"
             app:textColor="@color/primaryTextColor" />
 
         <RadioGroup

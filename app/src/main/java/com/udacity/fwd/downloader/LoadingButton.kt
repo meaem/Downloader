@@ -40,8 +40,11 @@ class LoadingButton @JvmOverloads constructor(
     private var circleAngle = 0f
 
     private var text = ""
+    private var animationText = ""
+    private var currentText = ""
     private var fillColor = Color.BLACK
     private var textColor = Color.WHITE
+
 
     private lateinit var circleRect: RectF
 
@@ -58,13 +61,16 @@ class LoadingButton @JvmOverloads constructor(
 
         when (new) {
             is ButtonState.Clicked -> {
+                currentText = text
                 animateButton()
             }
             is ButtonState.Loading -> {
+                currentText = animationText
                 isEnabled = false
             }
             //completed
             else -> {
+                currentText = text
                 isEnabled = true
             }
         }
@@ -129,6 +135,8 @@ class LoadingButton @JvmOverloads constructor(
             textColor = getColor(R.styleable.LoadingButton_textColor, Color.BLACK)
             fillColor = getColor(R.styleable.LoadingButton_fillColor, Color.GRAY)
             text = getString(R.styleable.LoadingButton_text) ?: "Loading Button"
+            animationText = getString(R.styleable.LoadingButton_animationText) ?: "Loading Button"
+            currentText = text
         }
 
     }
@@ -146,7 +154,7 @@ class LoadingButton @JvmOverloads constructor(
         canvas.save()
         canvas.translate((widthSize / 4).toFloat(), (heightSize / 4).toFloat())
         canvas.clipRect(0f, 0f, widthSize.toFloat() / 2, heightSize.toFloat() / 2)
-        canvas.drawText(text, 0f, FONT_SIZE, paint)
+        canvas.drawText(currentText, 0f, FONT_SIZE, paint)
         canvas.restore()
 
         //draw the gray rectangle and the circle at the end of the button rectangle
