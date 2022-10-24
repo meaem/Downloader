@@ -16,29 +16,30 @@ class DetailActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         val binding =
             DataBindingUtil.setContentView<ActivityDetailBinding>(this, R.layout.activity_detail)
-//        setContentView()
-//        setSupportActionBar(binding.toolbar)
+
+        //close the current activity and open the main activity if not opened
         binding.button.setOnClickListener {
             this.finish()
             val newIntent = Intent(applicationContext, MainActivity::class.java)
             newIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
             startActivity(newIntent)
         }
+
         val downloadManager = getSystemService(DOWNLOAD_SERVICE) as DownloadManager
-
-
         val downloadId = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1)
+
+        //query the DM with the download id
         val query = DownloadManager.Query().setFilterById(downloadId)
 
+        // open the cursor and get the first result
         val cursor: Cursor = downloadManager.query(query)
         cursor.moveToFirst()
         val status = cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_STATUS))
         val title = cursor.getString(cursor.getColumnIndex(DownloadManager.COLUMN_TITLE))
         val desc = cursor.getString(cursor.getColumnIndex(DownloadManager.COLUMN_DESCRIPTION))
 //        val localURI = cursor.getString(cursor.getColumnIndex(DownloadManager.COLUMN_LOCAL_URI))
-
-
         cursor.close()
+
 
         binding.txtID.text = downloadId.toString()
         binding.txtStatus.text = getStatusString(status)
@@ -60,7 +61,6 @@ class DetailActivity : AppCompatActivity() {
             DownloadManager.STATUS_SUCCESSFUL -> getString(R.string.success)
             else -> getString(R.string.invalid_status_code)
         }
-
     }
 
 }
