@@ -156,8 +156,10 @@ class LoadingButton @JvmOverloads constructor(
 
         //draw the text in the middle of the rectangle
         paint.color = textColor
+        val rectWidth = if (drawCircleRect) heightSize else 0
+
         canvas.save()
-        canvas.translate((widthSize / 4).toFloat(), (heightSize / 4).toFloat())
+        canvas.translate(((widthSize - rectWidth) / 3).toFloat(), (heightSize / 4).toFloat())
         canvas.clipRect(0f, 0f, widthSize.toFloat() / 2, heightSize.toFloat() / 2)
         canvas.drawText(currentText, 0f, FONT_SIZE, paint)
         canvas.restore()
