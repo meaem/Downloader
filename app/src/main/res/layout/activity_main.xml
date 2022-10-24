@@ -72,6 +72,25 @@
                 android:tag="@string/radio_retrofit_url"
                 android:text="@string/radio_retrofit_text"
                 android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+
+            <RadioButton
+                android:id="@+id/rdoOther"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="80dp"
+
+                android:text="@string/radio_other_text"
+                android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+
+            <EditText
+                android:id="@+id/txtUrl"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/enter_file_url_here"
+                android:inputType="textUri"
+                android:visibility="invisible"
+
+                />
         </RadioGroup>
 
     </androidx.constraintlayout.motion.widget.MotionLayout>

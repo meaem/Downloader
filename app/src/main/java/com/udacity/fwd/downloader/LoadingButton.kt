@@ -70,6 +70,8 @@ class LoadingButton @JvmOverloads constructor(
         }
     }
 
+    private lateinit var animatorSet: AnimatorSet
+
     private fun animateButton() {
         val animator1 = ValueAnimator.ofArgb(Color.BLACK, fillColor).apply {
             addUpdateListener {
@@ -102,7 +104,7 @@ class LoadingButton @JvmOverloads constructor(
         }
 
 
-        val set = AnimatorSet().apply {
+        animatorSet = AnimatorSet().apply {
             playTogether(animator1, animator2, animator3)
             duration = ANIMATION_DURATION
 
@@ -117,7 +119,8 @@ class LoadingButton @JvmOverloads constructor(
             })
 
         }
-        set.start()
+//        set.start()
+        animatorSet.start()
     }
 
 
@@ -190,6 +193,13 @@ class LoadingButton @JvmOverloads constructor(
         return super.performClick()
     }
 
+
+    fun stopAnimation() {
+        if (::animatorSet.isInitialized) {
+            animatorSet.pause()
+            animatorSet.reverse()
+        }
+    }
 
     //extension function to get the inverted color
     fun Color.invert(): Color {

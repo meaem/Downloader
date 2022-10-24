@@ -14,9 +14,11 @@
     <string name="radio_glide_text">Glide</string>
     <string name="radio_loadadpp_text">LoadApp</string>
     <string name="radio_retrofit_text">Retrofit</string>
+    <string name="radio_other_text">Other</string>
     <string name="radio_glide_desc">Download "Glide" project source as zip file</string>
     <string name="radio_loadadpp_desc">Download "Udacity Load App" project source as zip file</string>
     <string name="radio_retrofit_desc">Download "Retrofit" project source as zip file</string>
+    <string name="radio_other_desc">Download your files</string>
     <string name="radio_glide_url">https://github.com/bumptech/glide</string>
     <string name="radio_loadadpp_url">https://github.com/udacity/nd940-c3-advanced-android-programming-project-starter</string>
     <string name="radio_retrofit_url">https://github.com/square/retrofit</string>
@@ -31,6 +33,8 @@
     <string name="status">Status:</string>
     <string name="title">Title:</string>
     <string name="description">Description:</string>
+    <string name="enter_file_url_here">Enter file url here</string>
+    <string name="invalid_url_error">Invalid URL!! Please enter a valid URL to start download.</string>
 
 
 </resources>

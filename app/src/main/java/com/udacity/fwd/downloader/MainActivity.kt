@@ -10,6 +10,8 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.graphics.Color
 import android.os.Bundle
+import android.view.View
+import android.webkit.URLUtil
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationCompat
@@ -54,6 +56,13 @@ class MainActivity : AppCompatActivity() {
 
         registerReceiver(receiver, IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE))
 
+        binding.rdoGroup.setOnCheckedChangeListener { radioGroup, id ->
+            binding.txtUrl.visibility = when (id == R.id.rdoOther) {
+                true -> View.VISIBLE
+                false -> View.INVISIBLE
+            }
+
+        }
         binding.customButton.setOnClickListener {
             if (binding.rdoGroup.checkedRadioButtonId == -1) {
                 Toast.makeText(this, "Please Select an option", Toast.LENGTH_SHORT)
@@ -74,12 +83,32 @@ class MainActivity : AppCompatActivity() {
                             getString(R.string.radio_retrofit_desc)
                         )
                     }
-                    else -> {
+
+                    binding.rdoLoadApp.id -> {
                         DownloadRequest(
                             binding.rdoLoadApp.tag.toString(),
                             getString(R.string.radio_loadadpp_text),
                             getString(R.string.radio_loadadpp_desc)
                         )
+                    }
+                    //Other (manual url)
+                    else -> {
+                        val url = binding.txtUrl.text.toString()
+                        if (validateUrl(url)) {
+                            DownloadRequest(
+                                url,
+                                getString(R.string.radio_other_text),
+                                getString(R.string.radio_other_desc)
+                            )
+                        } else {
+//                            binding.customButton.stopAnimation()
+                            Toast.makeText(
+                                this,
+                                getString(R.string.invalid_url_error),
+                                Toast.LENGTH_SHORT
+                            ).show()
+                            null
+                        }
                     }
 
                 }
@@ -89,6 +118,10 @@ class MainActivity : AppCompatActivity() {
             }
 
         }
+    }
+
+    private fun validateUrl(url: String): Boolean {
+        return URLUtil.isValidUrl(url)
     }
 
     private fun createChannel(channelId: String, channelName: String, desc: String) {
@@ -107,20 +140,24 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    private fun download(dr: DownloadRequest) {
+    private fun download(dr: DownloadRequest?) {
+
 //        Log.d(TAG, "$url")
-        val request =
-            DownloadManager.Request(dr.uri)
-                .setTitle(dr.title)
-                .setDescription(dr.description)
-                .setRequiresCharging(false)
-                .setAllowedOverMetered(true)
-                .setAllowedOverRoaming(true)
+        dr?.let {
+            val request =
+                DownloadManager.Request(dr.uri)
+                    .setTitle(dr.title)
+                    .setDescription(dr.description)
+                    .setRequiresCharging(false)
+                    .setAllowedOverMetered(true)
+                    .setAllowedOverRoaming(true)
 
 
-        val downloadManager = getSystemService(DOWNLOAD_SERVICE) as DownloadManager
-        downloadID =
-            downloadManager.enqueue(request)// enqueue puts the download request in the queue.
+            val downloadManager = getSystemService(DOWNLOAD_SERVICE) as DownloadManager
+            downloadID =
+                downloadManager.enqueue(request)// enqueue puts the download request in the queue.
+        }
+
 
     }
 
@@ -154,6 +191,7 @@ class MainActivity : AppCompatActivity() {
         notificationManager.notify(NOTIFICATION_ID, notificationBuilder.build())
 
     }
+
 
 //    fun cancelNotification() {
 //        notificationManager =
